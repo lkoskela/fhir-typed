@@ -1,0 +1,30 @@
+{
+    "resourceType": "Patient",
+    "meta": {
+        "profile": ["http://hl7.org/fhir/uv/ipa/StructureDefinition/ipa-patient"]
+    },
+    "identifier": [
+        {
+            "use": "usual",
+            "system": "urn:oid:2.16.840.1.113883.2.4.6.3",
+            "value": "738472983"
+        }
+    ],
+    "active": true,
+    "name": [
+        {
+            "use": "usual",
+            "family": "van de Heuvel",
+            "given": ["Pieter"],
+            "suffix": ["MSc"]
+        }
+    ],
+    "link": [
+        {
+            "type": "seealso",
+            "other": {
+                "reference": "Patient/123"
+            }
+        }
+    ]
+}

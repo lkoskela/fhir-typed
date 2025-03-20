@@ -1,0 +1,42 @@
+{
+    "resourceType": "Patient",
+    "id": "patientesim1",
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p style=\"border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;\"><b>Karen Erika van der Hentenryck (OFFICIAL)</b> (no stated gender), DoB: 2010-08-25 ( id:\u00a0250810A999Y)</p><hr/><table class=\"grid\"><tr><td style=\"background-color: #f3f5da\" title=\"Alternate names (see the one above)\">Alt. Name:</td><td colspan=\"3\">Karen (NICKNAME)</td></tr></table></div>"
+    },
+    "identifier": [
+        {
+            "system": "urn:oid:1.2.246.21",
+            "value": "250810A999Y"
+        }
+    ],
+    "name": [
+        {
+            "use": "official",
+            "family": "van der Hentenryck",
+            "_family": {
+                "extension": [
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+                        "valueString": "van"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-prefix",
+                        "valueString": "der"
+                    },
+                    {
+                        "url": "http://hl7.org/fhir/StructureDefinition/humanname-own-name",
+                        "valueString": "Hentenryck"
+                    }
+                ]
+            },
+            "given": ["Karen", "Erika"]
+        },
+        {
+            "use": "nickname",
+            "given": ["Karen"]
+        }
+    ],
+    "birthDate": "2010-08-25"
+}

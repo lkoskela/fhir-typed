@@ -1,0 +1,21 @@
+{
+    "resourceType": "Patient",
+    "id": "36749a02-1710-44e7-aa76-0e934eb7860a",
+    "meta": {
+        "versionId": "1",
+        "lastUpdated": "2018-03-13T14:01:59.834+02:00",
+        "profile": ["http://phr.kanta.fi/StructureDefinition/fiphr-sd-patient"]
+    },
+    "language": "fi",
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"fi\" lang=\"fi\"><p style=\"border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;\"><b>Anonymous Patient</b> (no stated gender), DoB Unknown ( id:\u00a0urn:uuid:36749a02-1710-44e7-aa76-0e934eb7860a)</p><hr/><table class=\"grid\"><tr><td style=\"background-color: #f3f5da\" title=\"Record is active\">Active:</td><td colspan=\"3\">true</td></tr></table></div>"
+    },
+    "identifier": [
+        {
+            "system": "urn:ietf:rfc:3986",
+            "value": "urn:uuid:36749a02-1710-44e7-aa76-0e934eb7860a"
+        }
+    ],
+    "active": true
+}

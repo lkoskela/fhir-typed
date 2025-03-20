@@ -1,0 +1,71 @@
+{
+    "resourceType": "Patient",
+    "id": "patient-of-municipality",
+    "meta": {
+        "profile": ["https://hl7.fi/fhir/finnish-base-profiles/StructureDefinition/fi-base-patient"]
+    },
+    "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\"><p style=\"border: 1px #661aff solid; background-color: #e6e6ff; padding: 10px;\"><b>Testi Henkilö</b> male, DoB: 1990-01-01 ( National Identifier for Finland: 010190-999Y\u00a0(use:\u00a0OFFICIAL))</p><hr/><table class=\"grid\"><tr><td style=\"background-color: #f3f5da\" title=\"Record is active\">Active:</td><td colspan=\"3\">true</td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Ways to contact the Patient\">Contact Details:</td><td colspan=\"3\"><ul><li><a href=\"tel:+358401234657\">+358401234657</a></li><li>Testikatu 1 37910 Akaa (HOME)</li></ul></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Languages spoken\">Language:</td><td colspan=\"3\"><span title=\"Codes: {urn:oid:2.16.840.1.113883.4.642.3.20 fi}\">fi</span></td></tr><tr><td style=\"background-color: #f3f5da\" title=\"Extension for home municipality. Home municipality is relevant for ex. in billing and listing available healthcare services, and for statistical purposes. It it not necessarily the place where a patient lives, rather closer to where they pay their taxes.\"><a href=\"StructureDefinition-municipality-code.html\">Municipality Code:</a></td><td colspan=\"3\"><ul><li>urn:oid:1.2.246.537.6.21 020: Akaa (version = 2003)</li></ul></td></tr></table></div>"
+    },
+    "extension": [
+        {
+            "url": "https://hl7.fi/fhir/finnish-base-profiles/StructureDefinition/municipality-code",
+            "valueCoding": {
+                "system": "urn:oid:1.2.246.537.6.21",
+                "version": "2003",
+                "code": "020",
+                "display": "Akaa"
+            }
+        }
+    ],
+    "identifier": [
+        {
+            "use": "official",
+            "type": {
+                "coding": [
+                    {
+                        "system": "http://terminology.hl7.org/CodeSystem/v2-0203",
+                        "code": "NNFIN"
+                    }
+                ]
+            },
+            "system": "urn:oid:1.2.246.21",
+            "value": "010190-999Y"
+        }
+    ],
+    "active": true,
+    "name": [
+        {
+            "text": "Testi Henkilö",
+            "family": "Henkilö",
+            "given": ["Testi"]
+        }
+    ],
+    "telecom": [
+        {
+            "system": "phone",
+            "value": "+358401234657"
+        }
+    ],
+    "gender": "male",
+    "birthDate": "1990-01-01",
+    "address": [
+        {
+            "use": "home",
+            "line": ["Testikatu 1", "37910 Akaa"]
+        }
+    ],
+    "communication": [
+        {
+            "language": {
+                "coding": [
+                    {
+                        "system": "urn:oid:2.16.840.1.113883.4.642.3.20",
+                        "code": "fi"
+                    }
+                ]
+            }
+        }
+    ]
+}

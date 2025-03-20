@@ -1,0 +1,44 @@
+{
+    "name": "fhir-typed",
+    "version": "0.1.0",
+    "main": "index.js",
+    "type": "module",
+    "scripts": {
+        "clean": "rm -rf dist",
+        "test": "npm run build && npx vitest run --reporter=verbose",
+        "test:ui": "npx vitest --ui",
+        "test:watch": "npx vitest run --watch",
+        "zod-example": "npx tsx src/usage/zod.ts",
+        "codegen": "scripts/codegen.sh",
+        "codegen:update-tool": "scripts/codegen.sh --update-tool",
+        "codegen:update-files": "scripts/codegen.sh --update-generated-files",
+        "codegen:update-all": "scripts/codegen.sh --update-tool --update-generated-files",
+        "build": "npm run clean && npm run codegen && tsc"
+    },
+    "keywords": [
+        "fhir",
+        "typescript",
+        "validation",
+        "zod",
+        "schema"
+    ],
+    "author": "Lasse Koskela",
+    "license": "MIT",
+    "description": "",
+    "devDependencies": {
+        "@types/node": "^22.13.4",
+        "@types/semver": "^7.5.8",
+        "fast-shuffle": "^6.1.1",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.19.3",
+        "typescript": "^5.7.3",
+        "vitest": "^3.0.6"
+    },
+    "dependencies": {
+        "fhir-package-loader": "^2.1.0",
+        "fhirpath": "^3.17.0",
+        "glob": "^11.0.1",
+        "semver": "^7.7.1",
+        "zod": "^3.24.2"
+    }
+}
