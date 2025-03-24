@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-import { CodeSystem, StructureDefinition, ValueSet } from "@src/generated/FHIR-r4.js";
-
 import { Schemas, ResourceFile } from "./types/index.js";
 
 import console from "@src/utils/console.js";
@@ -10,8 +8,11 @@ import { parseJsonFromFilePath } from "@src/utils/filesystem.js";
 import { ResourceObject } from "@src/schemas/utils/dependencies.js";
 import { unique } from "@src/utils/arrays.js";
 import { contributeBuiltInSchemas } from "./codesystems/built-ins.js";
-import { buildSchemaForStructureDefinition } from "./parsing/structuredefinition/structuredefinition.js";
-import { DefaultResourceLoader, ResourceLoader } from "@src/packages/resource-loader.js";
+import { DefaultResourceLoader } from "@src/packages/resource-loader.js";
+
+import { processResource as processCodeSystemResource } from "./parsing/codesystem/schema-generator.js";
+import { processResource as processValueSetResource } from "./parsing/valueset/schema-generator.js";
+import { processResource as processStructureDefinitionResource } from "./parsing/structuredefinition/schema-generator.js";
 
 /**
  * Process a given resource file to contribute a schema to the larger context,
@@ -30,123 +31,11 @@ async function processResource(
     resolveSchema: (nameOrUrl: string) => undefined | z.Schema
 ) {
     if (file.resourceType === "StructureDefinition") {
-        const sd = resource as StructureDefinition;
-        contributeSchema(file, await buildSchemaForStructureDefinition(sd, resolveSchema));
+        processStructureDefinitionResource(file, resource, contributeSchema, resolveSchema);
     } else if (file.resourceType === "ValueSet") {
-        const valueset: ValueSet = resource;
-        const excludes = valueset.compose?.exclude || [];
-        const includes = valueset.compose?.include || [];
-
-        const includedValueSetSchemas: z.Schema[] = [];
-        includes.forEach((include) => {
-            // TODO: implement FHIR ValueSet filter operators: https://hl7.org/fhir/valueset-filter-operator.html
-            const filter = (include.filter || []).map((f) => JSON.stringify([f.property, f.op, f.value])).join(" and ");
-            if (include.valueSet && include.valueSet.length > 0) {
-                const schemas = include.valueSet
-                    .map((url) => resolveSchema(url))
-                    .map((schema) => schema || z.string().min(1));
-                includedValueSetSchemas.push(...schemas);
-                // console.log(
-                //   `  ValueSet ${valueset.url} includes ${
-                //     include.valueSet.length
-                //   } value sets (${include.valueSet.join(", ")}) ${
-                //     filter ? ` with filter ${filter}` : ""
-                //   }` +
-                //     ` (${schemas.length}/${include.valueSet.length} schemas resolved)`
-                // );
-            }
-            if (include.system) {
-                const concepts = include.concept || [];
-                if (concepts.length > 0) {
-                    // console.log(
-                    //   `  ValueSet ${valueset.url} defines ${
-                    //     concepts.length
-                    //   } concepts to include from system ${include.system}${
-                    //     filter ? ` with filter ${filter}` : ""
-                    //   }`
-                    // );
-                    // the include specifies a list of concepts from the referenced system,
-                    // so we can generate an enum instead of dereferencing a hopefully
-                    // already parsed schema or falling back to an "anything goes" string.
-                    const values = concepts.map((concept) => concept.code as string);
-                    if (values.length === 1) {
-                        includedValueSetSchemas.push(z.literal(values[0]));
-                    } else if (values.length >= 2) {
-                        includedValueSetSchemas.push(z.enum([values[0], values[1], ...values.slice(2)]));
-                    }
-                } else {
-                    // console.log(
-                    //   `  ValueSet ${valueset.url} includes system ${include.system}${
-                    //     filter ? ` with filter ${filter}` : ""
-                    //   }`
-                    // );
-                    const systemSchema = resolveSchema(include.system);
-                    if (systemSchema) {
-                        includedValueSetSchemas.push(systemSchema);
-                    } else {
-                        // console.warn(
-                        //   `  Could not resolve schema for system ${include.system} - allowing any non-empty string`
-                        // );
-                        // TODO: resolve the schema for an external system reference from
-                        // a list of hard-coded or dynamically loaded external CodeSystems.
-                        // For now, anything goes...
-                        includedValueSetSchemas.push(z.string().min(1));
-                    }
-                }
-            }
-        });
-        if (includedValueSetSchemas.length === 1) {
-            contributeSchema(file, includedValueSetSchemas[0]);
-        } else if (includedValueSetSchemas.length > 1) {
-            contributeSchema(
-                file,
-                z.union([includedValueSetSchemas[0], includedValueSetSchemas[1], ...includedValueSetSchemas.slice(2)])
-            );
-        } else {
-            console.log(
-                `Could not contribute any schemas for ValueSet ${valueset.url}: ${JSON.stringify(valueset, null, 2)}`
-            );
-        }
+        processValueSetResource(file, resource, contributeSchema, resolveSchema);
     } else if (file.resourceType === "CodeSystem") {
-        const codesystem: CodeSystem = resource;
-        const name = codesystem.name;
-        const url = codesystem.url;
-        const concepts = codesystem.concept || [];
-        const properties = codesystem.property || [];
-        if (codesystem.content === "complete") {
-            const allowedValues = concepts.map((concept) => concept.code as string);
-            const schema = z.enum([allowedValues[0], ...allowedValues.slice(1)]);
-            contributeSchema(file, schema);
-        } else if (codesystem.content === "example") {
-            // If the CodeSystem declares itself as an example, we shouldn't fail values
-            // outside the provided concepts – the list exists just for example as the name implies.
-            contributeSchema(file, z.string().min(1));
-        } else if (codesystem.content === "not-present") {
-            // If the CodeSystem declares its content as 'not-present', we should validate
-            // against an external source for the allowed values. Since we can't currently
-            // do that, for now we'll just allow any non-empty string.
-            contributeSchema(file, z.string().min(1));
-        } else if (codesystem.content === "fragment") {
-            // If the CodeSystem declares itself as a fragment, we shouldn't fail values
-            // outside the provided concepts – the list exists just for convenience.
-            contributeSchema(file, z.string().min(1));
-        } else if (codesystem.content === "supplement") {
-            // we'll just ignore "supplement" code systems for now
-            // console.log(
-            //     `TODO: Ignoring supplementary CodeSystem ${name} (${url}) which supplements ${
-            //         concepts.length
-            //     } concepts with ${properties.length} property in ${JSON.stringify(codesystem.supplements)}`
-            // );
-        } else {
-            // Ignore and report unexpected code system types
-            console.warn(`Ignoring ${JSON.stringify(codesystem.content)} CodeSystem ${name} (${url})`);
-            concepts.forEach((concept) => {
-                const code = concept.code;
-                console.warn(
-                    `  ${code}\t${(concept.property || []).map((prop) => `${prop.code}: ${prop.valueBoolean}`)}`
-                );
-            });
-        }
+        processCodeSystemResource(file, resource, contributeSchema, resolveSchema);
     }
 }
 
@@ -271,7 +160,6 @@ export async function generateZodSchemasForResourceFiles(
     };
 
     const assignSchemaForResourceFile = (resourceFile: ResourceFile, schema: z.Schema) => {
-        // console.log(`Assigning schema for ${resourceFile.url} from ${resourceFile.filePath} (was ${JSON.stringify((schema as any).__source)})`);
         (schema as any).__source = (schema as any).__source || resourceFile.filePath;
 
         assignSchema(resourceFile.url, schema);

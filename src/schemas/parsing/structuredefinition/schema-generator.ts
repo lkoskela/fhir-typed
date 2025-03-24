@@ -1,6 +1,7 @@
 import z from "zod";
 
 import { StructureDefinition } from "@src/generated/FHIR-r4.js";
+import { ResourceFile } from "../../types/index.js";
 import { convertStructureDefinitionToIntermediateFormat } from "./intermediate-format.js";
 import { convertToSchema } from "./conversion.js";
 
@@ -78,4 +79,26 @@ export async function buildSchemaForStructureDefinition(
     }
     console.warn(`Building a schema for a StructureDefinition of kind "${sd.kind}" is not supported: ${sd.url}`);
     return z.any().optional();
+}
+
+/**
+ * Process a given resource file to contribute a schema to the larger context,
+ * utilizing already processed files' respective schemas as building blocks.
+ *
+ * @param file `ResourceFile` The resource file to process.
+ * @param resource `any` The parsed FHIR resource object.
+ * @param contributeSchema `function` for registering a new Zod schema.
+ * @param resolveSchema `function` for resolving a previously registered Zod schema by its name or URL.
+ * @returns `void`
+ */
+export async function processResource(
+    file: ResourceFile,
+    resource: any,
+    contributeSchema: (resourceFile: ResourceFile, schema: z.Schema) => void,
+    resolveSchema: (nameOrUrl: string) => undefined | z.Schema
+) {
+    if (file.resourceType === "StructureDefinition") {
+        const schema = await buildSchemaForStructureDefinition(resource as StructureDefinition, resolveSchema);
+        contributeSchema(file, schema);
+    }
 }
