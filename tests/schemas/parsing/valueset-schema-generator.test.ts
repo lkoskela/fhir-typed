@@ -11,6 +11,9 @@ import {
     processValueSetFromFile,
     resourceFile,
     concepts,
+    FinnishAlphabetValueSet,
+    EnglishAlphabetCodeSystem,
+    GreekAlphabetValueSet,
 } from "@tests/__helpers/fixtures/index.js";
 import { ValueSet } from "@src/generated/FHIR-r4.js";
 
@@ -41,8 +44,6 @@ const AllButSixLetterGreekAlphabetValueSet = {
 };
 
 const EnglishVowelsValueSet = resourceFile(valueSet("EnglishVowels", "aeiouy".split("")));
-const FinnishAlphabetValueSet = resourceFile(valueSet("FinnishAlphabet", "abcdefghijklmnopqrstuvwxyzåäö".split("")));
-const EnglishAlphabetCodeSystem = resourceFile(codeSystem("AmericanAlphabet", "abcdefghijklmnopqrstuvwxyz".split("")));
 
 const ShortGreekAlphabetValueSet = resourceFile(
     codeSystem(
@@ -62,23 +63,7 @@ describe("ValueSet", () => {
     /**
      * A ValueSet can include a CodeSystem as-is.
      */
-    describe("includes a CodeSystem as-is", () => {
-        const GreekAlphabetValueSet: ValueSet = {
-            resourceType: "ValueSet",
-            id: "greek-alphabet-valueset",
-            url: "http://example.org/fhir/ValueSet/greek-alphabet",
-            version: "1.0.0",
-            name: "GreekAlphabetValueSet",
-            status: "active",
-            compose: {
-                include: [
-                    {
-                        system: GreekAlphabetCodeSystem.url,
-                    },
-                ],
-            },
-        };
-
+    describe("including a CodeSystem without excludes", () => {
         const codesystemFile: ResourceFile = resourceFile(GreekAlphabetCodeSystem);
         const valuesetFile: ResourceFile = resourceFile(GreekAlphabetValueSet);
         const schemas: Record<string, ZodSchema> = {};
