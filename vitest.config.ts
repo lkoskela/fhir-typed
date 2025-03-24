@@ -8,7 +8,7 @@ export default defineConfig({
     include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
     exclude: ['**/node_modules/**', '**/dist/**', '**/cypress/**', '**/.{idea,git,cache,output,temp}/**'],
     setupFiles: ['tests/matchers/index.ts'],
-    testTimeout: 10000,
+    testTimeout: 20000, // we need long timeouts for some of the internet-downloading tests...
   },
   resolve: {
     alias: {
