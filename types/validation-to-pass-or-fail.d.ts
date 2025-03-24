@@ -1,4 +1,4 @@
-import 'vitest';
+import "vitest";
 
 interface CustomSafeParseReturnTypeMatchers<R = unknown> {
     toPass(): R;
@@ -11,7 +11,7 @@ declare module "vitest" {
         toFail(issues?: Array<string | RegExp>, exact?: boolean): T;
     }
     interface AsymmetricMatchersContaining extends CustomSafeParseReturnTypeMatchers {
-        toPass(): void;
-        toFail(issues?: Array<string | RegExp>, exact?: boolean): void;
+        toPass(): ExpectationResult;
+        toFail(issues?: Array<string | RegExp>, exact?: boolean): ExpectationResult;
     }
 }
