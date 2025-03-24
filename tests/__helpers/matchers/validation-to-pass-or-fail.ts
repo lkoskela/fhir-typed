@@ -1,6 +1,6 @@
 import { ValidationResult } from "@src/api/fhir-validator.js";
 import { pluralize } from "@src/utils/strings.js";
-import { MatcherState } from "@vitest/expect";
+import { AsyncExpectationResult, MatcherState } from "@vitest/expect";
 import { ExpectationResult } from "@vitest/expect";
 import { SafeParseReturnType } from "zod";
 
@@ -45,35 +45,55 @@ const stringifyIssues = (issues: string[], list: boolean = false, truncate: numb
  * i.e. no issues reported.
  */
 export function toPass<T extends MatcherState = MatcherState>(this: T, received: any): ExpectationResult {
-    const result = simplifyResult(received as SafeParseReturnType<any, any>);
-    if (result.success !== true) {
-        if (result.issues.length === 0) {
-            console.error(
-                `WTF? Zod validation returned success:false but zero issues? ${JSON.stringify(received, null, 4)}`
-            );
+    function evaluate(received: SafeParseReturnType<any, any>): ExpectationResult {
+        const result = simplifyResult(received as SafeParseReturnType<any, any>);
+        if (result.success !== true) {
+            if (result.issues.length === 0) {
+                console.error(
+                    `WTF? Zod validation returned success:false but zero issues? ${JSON.stringify(received, null, 4)}`
+                );
+            }
+            return {
+                pass: false,
+                message: () =>
+                    `Expected input to pass validation, but it failed with ${pluralize(
+                        result.issues,
+                        "issue"
+                    )}:\n${stringifyIssues(result.issues, true)}`,
+            };
+        } else if (result.issues.length > 0) {
+            return {
+                pass: false,
+                message: () =>
+                    `Expected input to pass validation, which it did, but there were ${pluralize(
+                        result.issues,
+                        "issue"
+                    )} reported nevertheless:\n${stringifyIssues(result.issues, true)}`,
+            };
         }
         return {
-            pass: false,
-            message: () =>
-                `Expected input to pass validation, but it failed with ${pluralize(
-                    result.issues,
-                    "issue"
-                )}:\n${stringifyIssues(result.issues, true)}`,
-        };
-    } else if (result.issues.length > 0) {
-        return {
-            pass: false,
-            message: () =>
-                `Expected input to pass validation, which it did, but there were ${pluralize(
-                    result.issues,
-                    "issue"
-                )} reported nevertheless:\n${stringifyIssues(result.issues, true)}`,
+            pass: true,
+            message: () => `Expected ${JSON.stringify(received.data)} to pass, which it did.`,
         };
     }
-    return {
-        pass: true,
-        message: () => `Expected ${JSON.stringify(received.data)} to pass, which it did.`,
-    };
+
+    if (typeof received.success !== "boolean") {
+        if (received.then) {
+            return received.then((received: SafeParseReturnType<any, any>) => {
+                return evaluate(received);
+            });
+        } else {
+            throw new Error(
+                `toPass: Expected a SafeParseReturnType<any, any> or ValidationResult (or a Promise for one of those) but instead got a ${typeof received}: ${JSON.stringify(
+                    received,
+                    null,
+                    4
+                )}`
+            );
+        }
+    } else {
+        return evaluate(received);
+    }
 }
 
 /**

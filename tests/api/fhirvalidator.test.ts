@@ -1,6 +1,6 @@
 import { globSync } from "glob";
 
-import "@tests/matchers/index.js";
+import "@tests/__helpers/matchers/index.js";
 import { parseJsonFromFilePath } from "@src/utils/filesystem.js";
 import { FhirValidator, ValidationResult } from "@src/api/fhir-validator.js";
 

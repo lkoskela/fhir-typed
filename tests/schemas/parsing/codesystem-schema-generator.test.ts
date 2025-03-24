@@ -1,7 +1,7 @@
 import { processResource as processCodeSystem } from "@src/schemas/parsing/codesystem/schema-generator.js";
 import { ResourceFile } from "@src/schemas/types/index.js";
 import { z, ZodSchema } from "zod";
-import { codeSystem, GreekAlphabetCodeSystem, resourceFile } from "@tests/__helpers/helpers.js";
+import { codeSystem, GreekAlphabetCodeSystem, resourceFile } from "@tests/__helpers/fixtures/index.js";
 
 describe("CodeSystem", () => {
     describe("complete", async () => {

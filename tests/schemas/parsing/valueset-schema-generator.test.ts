@@ -11,7 +11,7 @@ import {
     processValueSetFromFile,
     resourceFile,
     concepts,
-} from "@tests/__helpers/helpers.js";
+} from "@tests/__helpers/fixtures/index.js";
 import { ValueSet } from "@src/generated/FHIR-r4.js";
 
 const AllButSixLetterGreekAlphabetValueSet = {

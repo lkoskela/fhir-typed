@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { globSync } from "glob";
 
-import "@tests/matchers/index.js";
+import "@tests/__helpers/matchers/index.js";
 import { parseJsonFromFilePath } from "@src/utils/filesystem.js";
 import { generateZodSchemasForPackages } from "@src/schemas/schema-generator.js";
 
