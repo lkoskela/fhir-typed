@@ -1,0 +1,22 @@
+{
+    "resourceType": "ValueSet",
+    "id": "young-resources-valueset",
+    "url": "http://example.org/fhir/ValueSet/young-resources",
+    "version": "1.0.1",
+    "name": "YoungResourcesValueSet",
+    "status": "active",
+    "compose": {
+        "include": [
+            {
+                "system": "http://example.org/fhir/CodeSystem/resources-codesystem",
+                "filter": [
+                    {
+                        "property": "code",
+                        "op": "is-a",
+                        "value": "child"
+                    }
+                ]
+            }
+        ]
+    }
+}

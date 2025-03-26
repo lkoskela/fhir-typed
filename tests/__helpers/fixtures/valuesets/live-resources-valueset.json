@@ -1,0 +1,32 @@
+{
+    "resourceType": "ValueSet",
+    "id": "live-resources-valueset",
+    "url": "http://example.org/fhir/ValueSet/live-resources",
+    "version": "1.0.1",
+    "name": "LiveResourcesValueSet",
+    "status": "active",
+    "compose": {
+        "include": [
+            {
+                "system": "http://example.org/fhir/CodeSystem/resources-codesystem",
+                "filter": [
+                    {
+                        "property": "code",
+                        "op": "descendent-of",
+                        "value": "human"
+                    }
+                ]
+            },
+            {
+                "system": "http://example.org/fhir/CodeSystem/resources-codesystem",
+                "filter": [
+                    {
+                        "property": "code",
+                        "op": "=",
+                        "value": "human"
+                    }
+                ]
+            }
+        ]
+    }
+}

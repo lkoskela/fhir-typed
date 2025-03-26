@@ -1,0 +1,149 @@
+{
+    "resourceType": "CodeSystem",
+    "id": "resources-codesystem",
+    "url": "http://example.org/fhir/CodeSystem/resources-codesystem",
+    "version": "1.0.1",
+    "name": "ResourcesCodeSystem",
+    "status": "active",
+    "content": "complete",
+    "hierarchyMeaning": "is-a",
+    "property": [
+        {
+            "code": "gender",
+            "uri": "http://example.org/fhir/codesystem-administrative-gender",
+            "type": "code"
+        }
+    ],
+    "concept": [
+        {
+            "code": "machine",
+            "display": "Machine",
+            "property": [
+                {
+                    "code": "gender",
+                    "valueCode": "other"
+                }
+            ],
+            "concept": [
+                {
+                    "code": "computer",
+                    "display": "Computer",
+                    "property": [
+                        {
+                            "code": "gender",
+                            "valueCode": "other"
+                        }
+                    ],
+                    "concept": [
+                        {
+                            "code": "laptop",
+                            "display": "Laptop computer",
+                            "property": [
+                                {
+                                    "code": "gender",
+                                    "valueCode": "other"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "desktop",
+                            "display": "Desktop computer",
+                            "property": [
+                                {
+                                    "code": "gender",
+                                    "valueCode": "other"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "code": "robot",
+                    "display": "Robot",
+                    "property": [
+                        {
+                            "code": "gender",
+                            "valueCode": "unknown"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "code": "human",
+            "display": "Human",
+            "property": [
+                {
+                    "code": "gender",
+                    "valueCode": "unknown"
+                }
+            ],
+            "concept": [
+                {
+                    "code": "adult",
+                    "display": "Adult",
+                    "property": [
+                        {
+                            "code": "gender",
+                            "valueCode": "unknown"
+                        }
+                    ],
+                    "concept": [
+                        {
+                            "code": "man",
+                            "display": "Man",
+                            "property": [
+                                {
+                                    "code": "gender",
+                                    "valueCode": "male"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "woman",
+                            "display": "Woman",
+                            "property": [
+                                {
+                                    "code": "gender",
+                                    "valueCode": "female"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "code": "child",
+                    "display": "Child",
+                    "property": [
+                        {
+                            "code": "gender",
+                            "valueCode": "unknown"
+                        }
+                    ],
+                    "concept": [
+                        {
+                            "code": "boy",
+                            "display": "Boy",
+                            "property": [
+                                {
+                                    "code": "gender",
+                                    "valueCode": "male"
+                                }
+                            ]
+                        },
+                        {
+                            "code": "girl",
+                            "display": "Girl",
+                            "property": [
+                                {
+                                    "code": "gender",
+                                    "valueCode": "female"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

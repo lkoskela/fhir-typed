@@ -1,0 +1,22 @@
+{
+    "resourceType": "ValueSet",
+    "id": "male-resources-valueset",
+    "url": "http://example.org/fhir/ValueSet/male-resources",
+    "version": "1.0.1",
+    "name": "MaleResourcesValueSet",
+    "status": "active",
+    "compose": {
+        "include": [
+            {
+                "system": "http://example.org/fhir/CodeSystem/resources-codesystem",
+                "filter": [
+                    {
+                        "property": "gender",
+                        "op": "=",
+                        "value": "male"
+                    }
+                ]
+            }
+        ]
+    }
+}

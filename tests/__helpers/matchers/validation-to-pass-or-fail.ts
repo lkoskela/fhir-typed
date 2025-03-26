@@ -47,10 +47,11 @@ const stringifyIssues = (issues: string[], list: boolean = false, truncate: numb
 export function toPass<T extends MatcherState = MatcherState>(this: T, received: any): ExpectationResult {
     function evaluate(received: SafeParseReturnType<any, any>): ExpectationResult {
         const result = simplifyResult(received as SafeParseReturnType<any, any>);
+
         if (result.success !== true) {
             if (result.issues.length === 0) {
                 console.error(
-                    `WTF? Zod validation returned success:false but zero issues? ${JSON.stringify(received, null, 4)}`
+                    `Validation returned \`success: false\` but zero issues? ${JSON.stringify(received, null, 4)}`
                 );
             }
             return {
@@ -61,7 +62,9 @@ export function toPass<T extends MatcherState = MatcherState>(this: T, received:
                         "issue"
                     )}:\n${stringifyIssues(result.issues, true)}`,
             };
-        } else if (result.issues.length > 0) {
+        }
+
+        if (result.issues.length > 0) {
             return {
                 pass: false,
                 message: () =>
@@ -71,6 +74,7 @@ export function toPass<T extends MatcherState = MatcherState>(this: T, received:
                     )} reported nevertheless:\n${stringifyIssues(result.issues, true)}`,
             };
         }
+
         return {
             pass: true,
             message: () => `Expected ${JSON.stringify(received.data)} to pass, which it did.`,
@@ -120,6 +124,7 @@ export function toFail<T extends MatcherState = MatcherState>(
     if (issues.length > 0) {
         if (exact) {
             // Check that the listed issues are present and are the only issues present in the result
+            console.warn(`toFail: exact mode is not implemented yet!`);
         } else {
             // Check that all the listed issues are present in the result
             const issueMatches = issues.map(

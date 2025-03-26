@@ -5,17 +5,27 @@ import { GreekAlphabetCodeSystem, resourceFile } from "@tests/__helpers/fixtures
 
 describe("CodeSystem", () => {
     describe("complete", async () => {
+        let schema: ZodSchema = z.any();
+
         const greekAlphabetFile: ResourceFile = resourceFile(GreekAlphabetCodeSystem);
 
         const schemas: Record<string, ZodSchema> = {};
-        let schema: ZodSchema = z.any();
-        const contribute = (rf: ResourceFile, schema: ZodSchema) => {
+        const resources: Record<string, any> = {};
+        const contribute = (rf: ResourceFile, resource: any | undefined, schema: ZodSchema) => {
             schemas[rf.url] = schema;
+            resources[rf.url] = resource;
         };
-        const resolve = (nameOrUrl: string) => schemas[nameOrUrl];
+        const resolveSchema = (nameOrUrl: string) => schemas[nameOrUrl];
+        const resolveResource = (nameOrUrl: string) => resources[nameOrUrl];
 
         beforeAll(async () => {
-            await processCodeSystem(greekAlphabetFile, GreekAlphabetCodeSystem, contribute, resolve);
+            await processCodeSystem(
+                greekAlphabetFile,
+                GreekAlphabetCodeSystem,
+                contribute,
+                resolveSchema,
+                resolveResource
+            );
             schema = schemas[greekAlphabetFile.url];
         });
 

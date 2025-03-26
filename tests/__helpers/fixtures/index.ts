@@ -10,7 +10,13 @@ import { parseJsonFromFilePath } from "@src/utils/filesystem.js";
 import { ZodSchema } from "zod";
 import { processResource as processCodeSystem } from "@src/schemas/parsing/codesystem/schema-generator.js";
 import { processResource as processValueSet } from "@src/schemas/parsing/valueset/schema-generator.js";
-import { writeFileSync } from "fs";
+import { statSync, writeFileSync } from "fs";
+import { sortResourceFilesByDependencies, sortResourceFilesByKind } from "@src/utils/sorting.js";
+
+/**
+ * File path to the root directory for fixtures related test assets and utilities.
+ */
+export const FIXTURES_DIR = join(__dirname, ".");
 
 /**
  * Process a CodeSystem from a `ResourceFile`, generating the schema delivered via
@@ -22,11 +28,12 @@ import { writeFileSync } from "fs";
  */
 export async function processCodeSystemFromFile(
     file: ResourceFile,
-    contribute: (rf: ResourceFile, schema: ZodSchema) => void,
-    resolve: (nameOrUrl: string) => ZodSchema
+    contribute: (rf: ResourceFile, resource: any | undefined, schema: ZodSchema) => void,
+    resolveSchema: (nameOrUrl: string) => ZodSchema,
+    resolveResource: (nameOrUrl: string) => undefined | any
 ) {
     const data = parseJsonFromFilePath(file.filePath);
-    await processCodeSystem(file, data, contribute, resolve);
+    await processCodeSystem(file, data, contribute, resolveSchema, resolveResource);
 }
 
 /**
@@ -39,11 +46,40 @@ export async function processCodeSystemFromFile(
  */
 export async function processValueSetFromFile(
     file: ResourceFile,
-    contribute: (rf: ResourceFile, schema: ZodSchema) => void,
-    resolve: (nameOrUrl: string) => ZodSchema
+    contribute: (rf: ResourceFile, resource: any | undefined, schema: ZodSchema) => void,
+    resolveSchema: (nameOrUrl: string) => ZodSchema,
+    resolveResource: (nameOrUrl: string) => undefined | any
 ) {
     const data = parseJsonFromFilePath(file.filePath);
-    await processValueSet(file, data, contribute, resolve);
+    await processValueSet(file, data, contribute, resolveSchema, resolveResource);
+}
+
+/**
+ * Process a list of `ResourceFile` objects, generating the schemas delivered via
+ * the `contribute` callback function. The `ResourceFile` objects are sorted by
+ * kind and by their dependencies, so that the `CodeSystem` objects are processed
+ *  before the `ValueSet` objects that reference them and so forth.
+ *
+ * @param contribute - A function that will be called with the processed schema.
+ * @param resolve - A function that will be called to resolve a name or URL to a schema.
+ * @param resources - The list of `ResourceFile` objects to process.
+ */
+export async function processResources(
+    contribute: (rf: ResourceFile, resource: any | undefined, schema: ZodSchema) => void,
+    resolveSchema: (nameOrUrl: string) => ZodSchema,
+    resolveResource: (nameOrUrl: string) => undefined | any,
+    ...resources: ResourceFile[]
+) {
+    resources
+        .sort(sortResourceFilesByKind)
+        .sort(sortResourceFilesByDependencies(resources))
+        .forEach(async (file) => {
+            if (file.resourceType === "CodeSystem") {
+                await processCodeSystemFromFile(file, contribute, resolveSchema, resolveResource);
+            } else if (file.resourceType === "ValueSet") {
+                await processValueSetFromFile(file, contribute, resolveSchema, resolveResource);
+            }
+        });
 }
 
 /**
@@ -95,15 +131,6 @@ export function valueSet(name: string, codes: string[], system?: string): ValueS
         },
     };
 }
-
-type ValueSetFromInputCodeSystem = {
-    resource: CodeSystem | ResourceFile;
-    codes?: string[];
-};
-type ValueSetFromInputValueSet = {
-    resource: ValueSet | ResourceFile;
-};
-type ValueSetFromInput = ValueSetFromInputCodeSystem | ValueSetFromInputValueSet;
 
 /**
  * Creates a `ValueSet` with the given name and composed of the provided set
@@ -254,6 +281,10 @@ function isValueSet(source: SystemAndCodes | ValueSet): source is ValueSet {
     return (source as any)?.resourceType === "ValueSet";
 }
 
+function isResourceFile(content: any): content is ResourceFile {
+    return content.filePath !== undefined && content.resourceType !== undefined && content.url !== undefined;
+}
+
 /**
  * Creates a `ValueSet` with the given name and composed of the (optionally)
  * provided set of concepts (codes) from each `CodeSystem`.
@@ -322,72 +353,65 @@ function hash(content: any): string {
  * @returns `ResourceFile`
  */
 export function resourceFile(content: any): ResourceFile {
+    if (isResourceFile(content)) {
+        if (statSync(content.filePath).isFile()) {
+            console.warn(`WARN: Passed an existing ResourceFile to resourceFile(): ${content.filePath}`);
+            return content;
+        }
+        throw new Error(`Can't create a ResourceFile - content is already a ResourceFile: ${JSON.stringify(content)}`);
+    }
     const id = hash(content);
     const filePath = join(tmpdir(), `${id}.json`);
     writeFileSync(filePath, JSON.stringify(content, null, 2));
     return {
         resourceType: content.resourceType,
-        url: `http://example.org/fhir/${content.resourceType}/${id}`,
-        name: `${content.resourceType}-${content.name || content.id || id}`,
+        url: content.url || `http://example.org/fhir/${content.resourceType}/${id}`,
+        name: content.name || content.id || id,
         filePath,
     } satisfies ResourceFile;
+}
+
+function parseCodeSystemFromDisk(filePath: string): CodeSystem {
+    const fullPath = join(FIXTURES_DIR, "codesystems", filePath);
+    return parseJsonFromFilePath(fullPath) as CodeSystem;
 }
 
 /**
  * The Greek alphabet as a FHIR `CodeSystem`.
  */
-export const GreekAlphabetCodeSystem = codeSystem("GreekAlphabet", [
-    "alpha",
-    "beta",
-    "gamma",
-    "delta",
-    "epsilon",
-    "zeta",
-    "eta",
-    "theta",
-    "iota",
-    "kappa",
-    "lambda",
-    "mu",
-    "nu",
-    "xi",
-    "omicron",
-    "pi",
-    "rho",
-    "sigma",
-    "tau",
-    "upsilon",
-    "phi",
-    "chi",
-    "psi",
-    "omega",
-]);
+export const GreekAlphabetCodeSystem = parseCodeSystemFromDisk("greek-alphabet.json");
 
 /**
- * The Finnish alphabet as a FHIR `ValueSet` (referencing `FinnishAlphabetCodeSystem`).
+ * The Greek alphabet as a FHIR `CodeSystem` but only containing codes with fewer than 4 characters.
  */
-export const GreekAlphabetValueSet = resourceFile(valueSetFromCodeSystem(GreekAlphabetCodeSystem));
+export const ShortGreekAlphabetCodeSystem = parseCodeSystemFromDisk("only-short-greek-alphabet.json");
+
+/**
+ * The Greek alphabet as a FHIR `CodeSystem` but only containing codes with more than 6 characters.
+ */
+export const LongGreekAlphabetCodeSystem = parseCodeSystemFromDisk("only-long-greek-alphabet.json");
+
+/**
+ * The Greek alphabet as a FHIR `ValueSet` (referencing `GreekAlphabetCodeSystem`).
+ */
+export const GreekAlphabetValueSet = valueSetFromCodeSystem(GreekAlphabetCodeSystem);
 
 /**
  * The Finnish alphabet as a FHIR `CodeSystem`.
  */
-export const FinnishAlphabetCodeSystem = resourceFile(
-    codeSystem("FinnishAlphabet", "abcdefghijklmnopqrstuvwxyzåäö".split(""))
-);
+export const FinnishAlphabetCodeSystem = codeSystem("FinnishAlphabet", "abcdefghijklmnopqrstuvwxyzåäö".split(""));
 
 /**
  * The Finnish alphabet as a FHIR `ValueSet` (referencing `FinnishAlphabetCodeSystem`).
  */
-export const FinnishAlphabetValueSet = resourceFile(valueSetFromCodeSystem(FinnishAlphabetCodeSystem));
+export const FinnishAlphabetValueSet = valueSetFromCodeSystem(FinnishAlphabetCodeSystem);
 
 /**
  * The English alphabet as a FHIR `CodeSystem`.
  */
-export const EnglishAlphabetCodeSystem = resourceFile(
-    codeSystem("AmericanAlphabet", "abcdefghijklmnopqrstuvwxyz".split(""))
-);
+export const EnglishAlphabetCodeSystem = codeSystem("AmericanAlphabet", "abcdefghijklmnopqrstuvwxyz".split(""));
 
 /**
  * The English alphabet as a FHIR `ValueSet` (referencing `EnglishAlphabetCodeSystem`).
  */
-export const EnglishAlphabetValueSet = resourceFile(valueSetFromCodeSystem(EnglishAlphabetCodeSystem));
+export const EnglishAlphabetValueSet = valueSetFromCodeSystem(EnglishAlphabetCodeSystem);

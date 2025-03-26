@@ -87,18 +87,19 @@ export async function buildSchemaForStructureDefinition(
  *
  * @param file `ResourceFile` The resource file to process.
  * @param resource `any` The parsed FHIR resource object.
- * @param contributeSchema `function` for registering a new Zod schema.
+ * @param contribute `function` for registering a new Zod schema.
  * @param resolveSchema `function` for resolving a previously registered Zod schema by its name or URL.
+ * @param resolveResource `function` for resolving a previously registered FHIR resource by its name or URL.
  * @returns `void`
  */
 export async function processResource(
     file: ResourceFile,
     resource: any,
-    contributeSchema: (resourceFile: ResourceFile, schema: z.Schema) => void,
+    contribute: (resourceFile: ResourceFile, resource: any | undefined, schema: z.Schema) => void,
     resolveSchema: (nameOrUrl: string) => undefined | z.Schema
 ) {
     if (file.resourceType === "StructureDefinition") {
         const schema = await buildSchemaForStructureDefinition(resource as StructureDefinition, resolveSchema);
-        contributeSchema(file, schema);
+        contribute(file, resource, schema);
     }
 }
