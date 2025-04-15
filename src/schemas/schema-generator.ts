@@ -20,22 +20,24 @@ import { processResource as processStructureDefinitionResource } from "./parsing
  *
  * @param file `ResourceFile` The resource file to process.
  * @param resource `any` The parsed FHIR resource object.
- * @param contributeSchema `function` for registering a new Zod schema.
+ * @param contribute `function` for registering a new Zod schema.
  * @param resolveSchema `function` for resolving a previously registered Zod schema by its name or URL.
+ * @param resolveResource `function` for resolving a previously registered FHIR resource by its name or URL.
  * @returns `void`
  */
 async function processResource(
     file: ResourceFile,
     resource: any,
-    contributeSchema: (resourceFile: ResourceFile, schema: z.Schema) => void,
-    resolveSchema: (nameOrUrl: string) => undefined | z.Schema
+    contribute: (resourceFile: ResourceFile, resource: any|undefined, schema: z.Schema) => void,
+    resolveSchema: (nameOrUrl: string) => undefined | z.Schema,
+    resolveResource: (nameOrUrl: string) => undefined | any
 ) {
     if (file.resourceType === "StructureDefinition") {
-        processStructureDefinitionResource(file, resource, contributeSchema, resolveSchema);
+        processStructureDefinitionResource(file, resource, contribute, resolveSchema);
     } else if (file.resourceType === "ValueSet") {
-        processValueSetResource(file, resource, contributeSchema, resolveSchema);
+        processValueSetResource(file, resource, contribute, resolveSchema, resolveResource);
     } else if (file.resourceType === "CodeSystem") {
-        processCodeSystemResource(file, resource, contributeSchema, resolveSchema);
+        processCodeSystemResource(file, resource, contribute, resolveSchema, resolveResource);
     }
 }
 
@@ -150,6 +152,7 @@ export async function generateZodSchemasForResourceFiles(
     resourceFiles = removeOverlappingDefinitions(resourceFiles);
 
     const results: Record<string, z.Schema> = { ...Schemas };
+    const resources: Record<string, any> = {};
 
     const assignSchema = (urlOrName: string | string[], schema: z.Schema) => {
         if (Array.isArray(urlOrName)) {
@@ -159,9 +162,12 @@ export async function generateZodSchemasForResourceFiles(
         }
     };
 
-    const assignSchemaForResourceFile = (resourceFile: ResourceFile, schema: z.Schema) => {
+    const assignSchemaForResourceFile = (resourceFile: ResourceFile, resource: any, schema: z.Schema) => {
         (schema as any).__source = (schema as any).__source || resourceFile.filePath;
 
+        if (resourceFile.resourceType === "CodeSystem") {
+            resources[resourceFile.url] = resource;
+        }
         assignSchema(resourceFile.url, schema);
 
         // Also assign the same schema to the resource's name as a kind of shorthand
@@ -189,6 +195,14 @@ export async function generateZodSchemasForResourceFiles(
         return schema;
     };
 
+    const resolveResource = (nameOrUrl: string): undefined | any => {
+        const resource = resources[nameOrUrl];
+        if (resource?.resourceType === "CodeSystem") {
+            return resource;
+        }
+        return undefined;
+    };
+
     // Collect a set of built-in "external" ValueSets referred to via system references,
     // such as "http://unitsofmeasure.org" or "http://loinc.org"
     contributeBuiltInSchemas(assignSchema);
@@ -200,7 +214,7 @@ export async function generateZodSchemasForResourceFiles(
         const schemaResolver: (nameOrUrl: string) => undefined | z.Schema = (nameOrUrl: string) => {
             return resolveSchema(nameOrUrl, file);
         };
-        await processResource(file, resource, assignSchemaForResourceFile, schemaResolver);
+        await processResource(file, resource, assignSchemaForResourceFile, schemaResolver, resolveResource);
     }
 
     return await Promise.resolve({ ...Schemas, ...results });

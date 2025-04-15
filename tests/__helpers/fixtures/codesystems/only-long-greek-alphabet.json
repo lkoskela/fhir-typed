@@ -1,0 +1,23 @@
+{
+    "resourceType": "CodeSystem",
+    "url": "http://example.org/fhir/CodeSystem/LongGreekAlphabet",
+    "id": "LongGreekAlphabet",
+    "name": "LongGreekAlphabet",
+    "version": "1.0.0",
+    "status": "active",
+    "content": "complete",
+    "concept": [
+        {
+            "code": "epsilon",
+            "display": "Epsilon"
+        },
+        {
+            "code": "omicron",
+            "display": "Omicron"
+        },
+        {
+            "code": "upsilon",
+            "display": "Upsilon"
+        }
+    ]
+}

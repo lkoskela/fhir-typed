@@ -16,6 +16,10 @@ function dependenciesOfCodeSystem(cs: CodeSystem): string[] {
     // and while it doesn't technically extend it by adding any *new* concepts (merely
     // adds properties/metadata to existing concepts), it's still a dependency...
     const deps: string[] = [];
+    cs.property?.forEach((property) => {
+        if (property.type) deps.push(property.type);
+        if (property.uri) deps.push(property.uri);
+    });
     if (cs.supplements) {
         deps.push(cs.supplements);
     }

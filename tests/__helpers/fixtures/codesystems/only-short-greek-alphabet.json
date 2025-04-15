@@ -1,0 +1,51 @@
+{
+    "resourceType": "CodeSystem",
+    "url": "http://example.org/fhir/CodeSystem/ShortGreekAlphabet",
+    "id": "ShortGreekAlphabet",
+    "name": "ShortGreekAlphabet",
+    "version": "1.0.0",
+    "status": "active",
+    "content": "complete",
+    "concept": [
+        {
+            "code": "eta",
+            "display": "Eta"
+        },
+        {
+            "code": "mu",
+            "display": "Mu"
+        },
+        {
+            "code": "nu",
+            "display": "Nu"
+        },
+        {
+            "code": "xi",
+            "display": "Xi"
+        },
+        {
+            "code": "pi",
+            "display": "Pi"
+        },
+        {
+            "code": "rho",
+            "display": "Rho"
+        },
+        {
+            "code": "tau",
+            "display": "Tau"
+        },
+        {
+            "code": "phi",
+            "display": "Phi"
+        },
+        {
+            "code": "chi",
+            "display": "Chi"
+        },
+        {
+            "code": "psi",
+            "display": "Psi"
+        }
+    ]
+}

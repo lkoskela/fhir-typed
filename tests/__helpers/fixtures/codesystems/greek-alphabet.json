@@ -1,0 +1,361 @@
+{
+    "resourceType": "CodeSystem",
+    "url": "http://example.org/fhir/CodeSystem/GreekAlphabet",
+    "id": "GreekAlphabet",
+    "name": "GreekAlphabet",
+    "version": "1.0.0",
+    "status": "active",
+    "content": "complete",
+    "property": [
+        {
+            "code": "length",
+            "uri": "http://example.org/fhir/CodeSystem/GreekAlphabet#length",
+            "description": "Indicates whether the letter's name is `short`, `mid-length` or `long`",
+            "type": "code"
+        },
+        {
+            "code": "greek",
+            "uri": "http://example.org/fhir/CodeSystem/GreekAlphabet#greek",
+            "description": "The Greek spelling of the letter's name",
+            "type": "string"
+        }
+    ],
+    "concept": [
+        {
+            "code": "alpha",
+            "display": "Alpha",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "άλφα"
+                }
+            ]
+        },
+        {
+            "code": "beta",
+            "display": "Beta",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "βήτα"
+                }
+            ]
+        },
+        {
+            "code": "gamma",
+            "display": "Gamma",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "γάμμα"
+                }
+            ]
+        },
+        {
+            "code": "delta",
+            "display": "Delta",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "δέλτα"
+                }
+            ]
+        },
+        {
+            "code": "epsilon",
+            "display": "Epsilon",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "long"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "εψιλον"
+                }
+            ]
+        },
+        {
+            "code": "zeta",
+            "display": "Zeta",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ζήτα"
+                }
+            ]
+        },
+        {
+            "code": "eta",
+            "display": "Eta",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ετα"
+                }
+            ]
+        },
+        {
+            "code": "theta",
+            "display": "Theta",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "θήτα"
+                }
+            ]
+        },
+        {
+            "code": "iota",
+            "display": "Iota",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ιώτα"
+                }
+            ]
+        },
+        {
+            "code": "kappa",
+            "display": "Kappa",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "κάππα"
+                }
+            ]
+        },
+        {
+            "code": "lambda",
+            "display": "Lambda",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "long"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "λάμδα"
+                }
+            ]
+        },
+        {
+            "code": "mu",
+            "display": "Mu",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "μου"
+                }
+            ]
+        },
+        {
+            "code": "nu",
+            "display": "Nu",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "νυ"
+                }
+            ]
+        },
+        {
+            "code": "xi",
+            "display": "Xi",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ξι"
+                }
+            ]
+        },
+        {
+            "code": "omicron",
+            "display": "Omicron",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "long"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ομικρόν"
+                }
+            ]
+        },
+        {
+            "code": "pi",
+            "display": "Pi",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "πι"
+                }
+            ]
+        },
+        {
+            "code": "rho",
+            "display": "Rho",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ρω"
+                }
+            ]
+        },
+        {
+            "code": "sigma",
+            "display": "Sigma",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "σίγμα"
+                }
+            ]
+        },
+        {
+            "code": "tau",
+            "display": "Tau",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ταυ"
+                }
+            ]
+        },
+        {
+            "code": "upsilon",
+            "display": "Upsilon",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "long"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "υψιλόν"
+                }
+            ]
+        },
+        {
+            "code": "phi",
+            "display": "Phi",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "φι"
+                }
+            ]
+        },
+        {
+            "code": "chi",
+            "display": "Chi",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "χι"
+                }
+            ]
+        },
+        {
+            "code": "psi",
+            "display": "Psi",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "short"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ψι"
+                }
+            ]
+        },
+        {
+            "code": "omega",
+            "display": "Omega",
+            "property": [
+                {
+                    "code": "length",
+                    "valueCode": "medium"
+                },
+                {
+                    "code": "greek",
+                    "valueString": "ωμέγα"
+                }
+            ]
+        }
+    ]
+}
