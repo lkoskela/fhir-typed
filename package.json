@@ -36,7 +36,7 @@
     },
     "dependencies": {
         "fhir-package-loader": "^2.2.2",
-        "fhirpath": "^3.18.0",
+        "fhirpath": "^4.6.0",
         "glob": "^11.0.3",
         "semver": "^7.7.3",
         "zod": "^3.24.2"
