@@ -30,7 +30,7 @@
         "@types/semver": "^7.7.1",
         "fast-shuffle": "^6.1.1",
         "ts-node": "^10.9.2",
-        "tsx": "^4.19.3",
+        "tsx": "^4.20.6",
         "typescript": "^5.9.3",
         "vitest": "^3.1.1"
     },
