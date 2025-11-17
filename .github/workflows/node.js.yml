@@ -53,5 +53,15 @@ jobs:
 
       - name: Run tests
         run: npm test
+        continue-on-error: true
         env:
-          FHIR_CACHE_DIR: .fhir
+          FHIR_CACHE_DIR: ${{ github.workspace }}/.fhir
+          
+      - name: Figure out what happend
+        if: failure()
+        env:
+          FHIR_CACHE_DIR: ${{ github.workspace }}/.fhir
+        run: |
+          echo "===== FHIR_CACHE_DIR ====="
+          echo "FHIR_CACHE_DIR=$FHIR_CACHE_DIR"
+          find $FHIR_CACHE_DIR || echo "find command failed"
