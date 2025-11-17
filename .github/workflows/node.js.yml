@@ -54,6 +54,4 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          HOME: ${{ github.workspace }}
-          USER_HOME: ${{ github.workspace }}
-          #FHIR_CACHE_DIR: .fhir
+          FHIR_CACHE_DIR: .fhir

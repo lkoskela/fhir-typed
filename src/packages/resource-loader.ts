@@ -3,7 +3,16 @@ import { homedir } from "os";
 import { existsSync, mkdirSync, readFileSync, statSync } from "fs";
 
 import { globSync } from "glob";
-import fpl, { LoadStatus, PackageLoader } from "fhir-package-loader";
+import fpl, {
+    BasePackageLoader,
+    BasePackageLoaderOptions,
+    BuildDotFhirDotOrgClient,
+    createSQLJSPackageDB,
+    DefaultRegistryClient,
+    DiskBasedPackageCache,
+    LoadStatus,
+    PackageLoader,
+} from "fhir-package-loader";
 import semver from "semver";
 
 import { ResourceFile } from "@src/schemas/types/index.js";
@@ -332,22 +341,22 @@ export interface ResourceLoader {
     loadFiles(...filePaths: string[]): Promise<Array<ResourceFile>>;
 }
 
+async function customPackageLoader(options: BasePackageLoaderOptions) {
+    const db = await createSQLJSPackageDB();
+    const fhirCache = join(CACHE_DIR, "packages");
+    const cache = new DiskBasedPackageCache(fhirCache, { log: options.log });
+    const registryClient = new DefaultRegistryClient({ log: options.log });
+    const buildClient = new BuildDotFhirDotOrgClient({ log: options.log });
+    return new BasePackageLoader(db, cache, registryClient, buildClient, options);
+}
+
 export class DefaultResourceLoader implements ResourceLoader {
     private loader: Promise<fpl.BasePackageLoader>;
     private resourceFiles: Promise<ResourceFile[]> = Promise.resolve([]);
 
     constructor() {
-        this.loader = fpl.defaultPackageLoader({
-            log: (level: string, message: string) => {
-                if (level === "error") {
-                    console.error(level, message);
-                } else if (level === "warn") {
-                    console.warn(level, message);
-                } else {
-                    console.log(level || JSON.stringify(level), message);
-                }
-            }
-        });
+        //this.loader = fpl.defaultPackageLoader({});
+        this.loader = customPackageLoader({});
     }
 
     async getResourceFiles(): Promise<ResourceFile[]> {
