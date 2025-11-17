@@ -17,7 +17,8 @@ done
 ###
 # First, make sure we've got the "fhir-codegen" submodule in place and up to date.
 ###
-FHIRCODEGEN_DIR="$HOME/.fhir-codegen"
+FHIRCODEGEN_DIR="$(pwd)/.fhir-codegen"
+echo "FHIRCODEGEN_DIR is '$FHIRCODEGEN_DIR'"
 
 if [ -d "$FHIRCODEGEN_DIR" ] && [ -n "$UPDATE_TOOL" ]; then
     printf '%s\n' "Updating fhir-codegen..."
