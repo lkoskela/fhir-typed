@@ -53,8 +53,9 @@ async function parsePackageJson(filePath: string): Promise<FHIRPackageJson> {
 async function downloadIfNeeded(loader: PackageLoader, pkg: PackageIdentifier): Promise<void> {
     const status = loader.getPackageLoadStatus(pkg.name, pkg.version);
     if (status !== LoadStatus.LOADED) {
-        //console.log(`Downloading ${pkg.name}#${pkg.version}`);
+        console.log(`Downloading ${pkg.name}#${pkg.version} ...`);
         await loader.loadPackage(pkg.name, pkg.version);
+        console.log(`Downloaded ${pkg.name}#${pkg.version} successfully.`);
     } else {
         //console.log(`${pkg.name}#${pkg.version} has already been loaded.`);
     }
@@ -333,7 +334,17 @@ export class DefaultResourceLoader implements ResourceLoader {
     private resourceFiles: Promise<ResourceFile[]> = Promise.resolve([]);
 
     constructor() {
-        this.loader = fpl.defaultPackageLoader({});
+        this.loader = fpl.defaultPackageLoader({
+            log: (level: string, message: string) => {
+                if (level === "error") {
+                    console.error(level, message);
+                } else if (level === "warn") {
+                    console.warn(level, message);
+                } else {
+                    console.log(level || JSON.stringify(level), message);
+                }
+            }
+        });
     }
 
     async getResourceFiles(): Promise<ResourceFile[]> {
