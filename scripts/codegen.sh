@@ -68,7 +68,7 @@ FHIR_VERSION_NUMBER="4.0.1"
 
 OUTPUT_FILE_R4="FHIR-r4.ts"
 if [ -n "$UPDATE_GENERATED_FILES" ] || [ ! -f "$OUTPUT_DIR/$OUTPUT_FILE_R4" ]; then
-    printf '%s\n' "Generating $OUTPUT_FILE_R4 based on FHIR Core R4 definitions..."
+    printf '%s\n' "Generating $OUTPUT_DIR/$OUTPUT_FILE_R4 based on FHIR Core R4 definitions..."
     "$FHIR_CODEGEN_EXECUTABLE" generate typescript \
         --min-ts-version 5.4.3 \
         --resolve-dependencies \
