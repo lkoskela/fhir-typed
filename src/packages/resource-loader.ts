@@ -1,6 +1,6 @@
 import { basename, join } from "path";
 import { homedir } from "os";
-import { existsSync, readFileSync, statSync } from "fs";
+import { existsSync, mkdirSync, readFileSync, statSync } from "fs";
 
 import { globSync } from "glob";
 import fpl, { LoadStatus, PackageLoader } from "fhir-package-loader";
@@ -90,8 +90,14 @@ type DownloadedPackage = {
     files: string[];
 };
 
+const CACHE_DIR = ((): string => {
+    const filePath = process.env.FHIR_CACHE_DIR || join(homedir(), ".fhir");
+    mkdirSync(filePath, { recursive: true });
+    return filePath;
+})();
+
 async function findDownloadedPackage(pkg: PackageIdentifier): Promise<DownloadedPackage | undefined> {
-    const cacheDir = join(homedir(), ".fhir", "packages");
+    const cacheDir = join(CACHE_DIR, "packages");
     if (!existsSync(cacheDir) || !statSync(cacheDir).isDirectory()) {
         return undefined;
     }

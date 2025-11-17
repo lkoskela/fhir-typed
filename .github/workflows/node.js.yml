@@ -53,3 +53,5 @@ jobs:
 
       - name: Run tests
         run: npm test
+        env:
+          FHIR_CACHE_DIR: .fhir
