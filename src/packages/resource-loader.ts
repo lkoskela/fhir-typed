@@ -90,7 +90,11 @@ type DownloadedPackage = {
     files: string[];
 };
 
-const CACHE_DIR = ((): string => {
+/**
+ * The directory under which all downloaded FHIR packages are cached locally
+ * (at `{CACHE_DIR}/packages/{package-name}#{version}/...`).
+ */
+export const CACHE_DIR: string = ((): string => {
     const filePath = process.env.FHIR_CACHE_DIR || join(homedir(), ".fhir");
     mkdirSync(filePath, { recursive: true });
     return filePath;

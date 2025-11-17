@@ -1,4 +1,5 @@
 import { ResourceFile } from "@src/schemas/types/index.js";
+import { CACHE_DIR } from "@src/packages/resource-loader.js";
 import { sortResourceFilesByKind, sortResourceFilesByDependencies } from "@src/utils/sorting.js";
 import { stubResourceFile, stubValueSet } from "./fixtures.js";
 import { join } from "path";
@@ -108,11 +109,11 @@ describe("precedence", () => {
     describe("smoke test", () => {
         const cs = stubResourceFile({
             url: "http://terminology.hl7.org/CodeSystem/practitioner-role",
-            filePath: "/Users/lkoskela/.fhir/packages/hl7.fhir.r4.core#4.0.1/package/CodeSystem-practitioner-role.json",
+            filePath: join(CACHE_DIR, "packages/hl7.fhir.r4.core#4.0.1/package/CodeSystem-practitioner-role.json"),
         });
         const vs = stubResourceFile({
             url: "http://hl7.org/fhir/ValueSet/practitioner-role",
-            filePath: "/Users/lkoskela/.fhir/packages/hl7.fhir.r4.core#4.0.1/package/ValueSet-practitioner-role.json",
+            filePath: join(CACHE_DIR, "packages/hl7.fhir.r4.core#4.0.1/package/ValueSet-practitioner-role.json"),
         });
         const sortFn = sortResourceFilesByDependencies([cs, vs]);
 
