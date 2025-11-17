@@ -22,6 +22,8 @@ done
 # Download and build the fhir-codegen executable as needed
 WORKING_DIR=$(pwd)
 echo "Running in working directory: $WORKING_DIR"
+echo 'find . -name "*.sh" -or -name "*.md" -not -path "*/node_modules/*"'
+find . -name "*.sh" -or -name "*.md" -not -path "*/node_modules/*"
 echo "Running $WORKING_DIR/scripts/download-fhir-codegen.sh $@"
 source "$WORKING_DIR/scripts/download-fhir-codegen.sh" $@
 cd "$WORKING_DIR"
