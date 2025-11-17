@@ -104,6 +104,7 @@ export const CACHE_DIR: string = ((): string => {
 async function findDownloadedPackage(pkg: PackageIdentifier): Promise<DownloadedPackage | undefined> {
     const cacheDir = join(CACHE_DIR, "packages");
     if (!existsSync(cacheDir) || !statSync(cacheDir).isDirectory()) {
+        console.warn(`FHIR cache directory does not exist: ${cacheDir}`);
         return undefined;
     }
     if (pkg.version === "latest") {
@@ -286,8 +287,10 @@ async function loadResourcesForPackage(loader: PackageLoader, pkg: PackageIdenti
     ): Promise<Array<ResourceFile>> {
         // First, make sure that we've loaded the requested FHIR package to
         // the local FHIR cache (usually under the user's home directory):
+        console.log(`downloadIfNeeded(${key(pkg)}) called...`);
         await downloadIfNeeded(loader, pkg);
-
+        console.log(`downloadIfNeeded(${key(pkg)}) returned.`);
+        console.log(`findDownloadedPackage(${key(pkg)}) called.`);
         const dpkg = await findDownloadedPackage(pkg);
         if (!dpkg) {
             return Promise.reject(`Could not find package ${key(pkg)}`);
