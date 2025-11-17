@@ -1,8 +1,8 @@
 #!/bin/sh
 
 # Parse command line arguments
-while [[ $# -gt 0 ]]; do
-    case $1 in
+while [ "$#" -gt 0 ]; do
+    case "$1" in
         --update-tool)
             UPDATE_TOOL=1
             shift
@@ -12,8 +12,8 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         *)
-            echo "Unknown argument: $1"
-            echo "Usage: $0 [--update-tool] [--update-generated-files]"
+            echo "Unknown argument: $1" >&2
+            echo "Usage: $0 [--update-tool] [--update-generated-files]" >&2
             exit 1
             ;;
     esac
