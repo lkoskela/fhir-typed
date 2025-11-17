@@ -21,8 +21,10 @@ done
 
 # Download and build the fhir-codegen executable as needed
 WORKING_DIR=$(pwd)
-source ./scripts/download-fhir-codegen.sh $@
-cd $WORKING_DIR
+echo "Running in working directory: $WORKING_DIR"
+echo "Running $WORKING_DIR/scripts/download-fhir-codegen.sh $@"
+source "$WORKING_DIR/scripts/download-fhir-codegen.sh" $@
+cd "$WORKING_DIR"
 
 if [ "$FHIR_CODEGEN_EXECUTABLE" == "" ]; then
     echo "FHIR codegen executable path not published via FHIR_CODEGEN_EXECUTABLE. Exiting."
