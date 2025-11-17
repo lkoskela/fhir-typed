@@ -36,7 +36,7 @@ jobs:
         run: |
           find . -name ".git" -type d
           find . -name ".fhir-codegen"
-          tree /home/runner/work/fhir-typed/fhir-typed/.fhir-codegen
+          tree . -L 3 || echo "tree command not found, skipping"
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v6
