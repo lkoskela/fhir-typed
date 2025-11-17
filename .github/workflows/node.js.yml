@@ -58,7 +58,6 @@ jobs:
           FHIR_CACHE_DIR: ${{ github.workspace }}/.fhir
           
       - name: Figure out what happend
-        if: failure()
         env:
           FHIR_CACHE_DIR: ${{ github.workspace }}/.fhir
         run: |
