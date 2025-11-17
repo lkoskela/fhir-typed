@@ -13,7 +13,7 @@
         "codegen:update-tool": "scripts/codegen.sh --update-tool",
         "codegen:update-files": "scripts/codegen.sh --update-generated-files",
         "codegen:update-all": "scripts/codegen.sh --update-tool --update-generated-files",
-        "build": "npm run clean && npm run codegen && tsc"
+        "build": "npm run clean && npm run codegen:update-files && tsc"
     },
     "keywords": [
         "fhir",

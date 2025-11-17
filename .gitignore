@@ -1,4 +1,13 @@
+# macOS system files:
+.DS_Store
+
+# build outputs:
 node_modules/
 dist/
-.DS_Store
+
+# logging outputs:
 *.log
+
+# directories containing code-generated files/tools:
+.fhir-codegen/
+.fhir/
